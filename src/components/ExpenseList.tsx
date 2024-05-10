@@ -10,7 +10,7 @@ export const ExpenseList = () => {
         {isEmpty ? <p className="text-2xl text-gray-600 font-bold">No hay gastos aún</p> : 
         (
             <>
-                <p className="text-2xl text-gray-600 font-bold mt-5">Listado de Gastos</p>
+                <p className="text-2xl text-gray-600 font-bold my-5">Listado de Gastos</p>
                 {state.expenses.map((expense) => (
                     <ExpenseDetail
                         key={expense.id}
