@@ -10,6 +10,7 @@ import { useBudget } from "../hooks/useBudget";
 
 
 export const ExpenseForm = () => {
+    
     const [expense, setExpense] = useState<DraftExpense>({
         expenseName: '',
         amount: 0,
@@ -17,11 +18,13 @@ export const ExpenseForm = () => {
         date: new Date()
     })
     const [error, setError] = useState('')
-    const {dispatch,state}=useBudget();
+    const [previousAmount, setPreviousAmount] = useState(0)
+    const {dispatch,state,remainingBudget}=useBudget();
     useEffect(()=>{
         if(state.editingId){
             const editingExpense=state.expenses.filter(currentExpense=>currentExpense.id===state.editingId)[0]
             setExpense(editingExpense)
+            setPreviousAmount(editingExpense.amount)
         }
     },[state.editingId])
     const handleChange = (e: ChangeEvent<HTMLInputElement>| ChangeEvent<HTMLSelectElement>) => {
@@ -46,6 +49,10 @@ export const ExpenseForm = () => {
             setError('Llena los campos');
             return
         }
+        if(remainingBudget<(expense.amount - previousAmount)){
+            setError('No hay suficiente presupuesto');
+            return
+        }
         
         //agregar o actualizar el gasto
         if(state.editingId){
@@ -62,12 +69,15 @@ export const ExpenseForm = () => {
             category: '',
             date: new Date()
         })
+        setPreviousAmount(0)
     }
   return (
     <form className="space-y-5" onSubmit={handleSubmit}>
-        <legend className="uppercase text-center text-2xl font-black border-b-4 
-        border-blue-600 py-2">
-            Nuevo gasto
+        <legend 
+            className="uppercase text-center text-2xl font-black border-b-4 
+            border-blue-600 py-2"
+        >
+            {state.editingId ? 'Editar gasto' : 'Añade un gasto'}
         </legend>
         {error && <ErrorMessage>{error}</ErrorMessage>}
 
@@ -137,7 +147,7 @@ export const ExpenseForm = () => {
             type="submit" 
             className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 
             px-4 rounded cursor-pointer"
-            value="Anadir gasto"
+            value={state.editingId ? 'Guardar cambios' : 'Anadir gasto'}
         />
     </form>
   )
