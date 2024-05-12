@@ -15,7 +15,7 @@ export const ExpenseDetail = ({expense}:ExpenseDetailProps) => {
     const categoryInfo=useMemo(()=> categories.filter(cat=>cat.id===expense.category)[0],[expense]);
     const leadingActions = () => (
         <LeadingActions>
-            <SwipeAction onClick={() => {}}> 
+            <SwipeAction onClick={() => dispatch({type:'GET_EXPENSE_BY_ID',payload:{id:expense.id}})}> 
                 Actualizar
             </SwipeAction>
         </LeadingActions>
